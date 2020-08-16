@@ -81,9 +81,9 @@
 						}
 					  }
 					}).then(function (res) {
-							console.log("Response", response);
-							//let str = JSON.stringify(res.result);//將物件列化成string，方便顯示結果在畫面上
-							//document.getElementById('content').innerHTML = str;
+							console.log("Response", res);
+							let str = JSON.stringify(res.result);//將物件列化成string，方便顯示結果在畫面上
+							document.getElementById('content').innerHTML = str;
 							
 							//↑通常metadata標記primary:true的個資就是你該抓的資料
 							//請再自行Parse JSON，可以將JSON字串丟到線上parse工具查看：http://json.parser.online.fr/
