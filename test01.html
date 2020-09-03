@@ -51,6 +51,7 @@
                 console.log(`user_id:${user_id}`);
                 let AuthResponse = GoogleUser.getAuthResponse(true);
                 let id_token = AuthResponse.id_token;
+                console.log(`id_token:${id_token}`);
                 
 				var requestURL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";
 				var dataJSON = {
@@ -68,8 +69,8 @@
 					type: "POST",
 					dataType: "json",
 					contentType: "application/json;charset=utf-8",
-					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Authorization', 'Bearer ' + id_token);
+					headers: {
+						'Authorization': `Bearer ${id_token}`,
 					},
 					success: function(returnData){
 						console.log(returnData);
