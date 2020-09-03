@@ -53,24 +53,23 @@
                 let id_token = AuthResponse.id_token;
                 console.log(`id_token:${id_token}`);
                 
-				var requestURL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";
-				var dataJSON = {
-				  "aggregateBy": [{
-					"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
-				  }],
-				  "bucketByTime": { "durationMillis": 86400000 },
-				  "startTimeMillis": 1596902400000,
-				  "endTimeMillis": 1597507200000
-				};
+				var requestURL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";				
 				
 				$.ajax({
-					url: requestURL,
-					data: JSON.stringify(dataJSON),
 					type: "POST",
+					url: requestURL,
+					data: {
+					  "aggregateBy": [{
+						"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+					  }],
+					  "bucketByTime": { "durationMillis": 86400000 },
+					  "startTimeMillis": 1596902400000,
+					  "endTimeMillis": 1597507200000
+					},
 					dataType: "json",
 					contentType: "application/json;charset=utf-8",
 					headers: {
-						'Authorization': `Bearer ${id_token}`,
+						'Authorization': `idtoken=${id_token}`,
 					},
 					success: function(returnData){
 						console.log(returnData);
