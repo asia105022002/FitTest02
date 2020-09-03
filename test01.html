@@ -72,7 +72,7 @@
 					},
 					success: function(returnData){
 						console.log(returnData);
-						let str = JSON.stringify(returnData.result);
+						let str = JSON.stringify(returnData);
 						document.getElementById('content').innerHTML = str;
 					},
 					error: function(xhr, ajaxOptions, thrownError){
