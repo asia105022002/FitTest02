@@ -51,7 +51,9 @@
                 console.log(`user_id:${user_id}`);
                 let AuthResponse = GoogleUser.getAuthResponse(true);
                 let id_token = AuthResponse.id_token;
+				let access_token = AuthResponse.access_token;
                 console.log(`id_token:${id_token}`);
+                console.log(`access_token:${access_token}`);
                 
 				var requestURL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";				
 				
@@ -59,7 +61,6 @@
 					type: "POST",
 					url: requestURL,
 					data: {
-					  "id_token": id_token,
 					  "aggregateBy": [{
 						"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
 					  }],
@@ -69,6 +70,9 @@
 					},
 					dataType: "json",
 					contentType: "application/json;charset=utf-8",
+					headers: {
+						'Authorization': `Bearer ${access_token}`,
+					},
 					success: function(returnData){
 						console.log(returnData);
 					},
