@@ -75,7 +75,7 @@
 					success: function(returnData){
 						console.log(returnData);
 						let str = JSON.stringify(returnData, null, 4);
-						$('.box').append(str);
+						$('.box').text(str);
 					},
 					error: function(xhr, ajaxOptions, thrownError){
 						console.log(xhr.status);
