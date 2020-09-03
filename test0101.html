@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Google Fit Test</title>
+</head>
+<body>
+    <button type="button" id="btnSignIn">Google登入</button>
+    <button type="button" id="btnDisconnect">斷連Google App</button>
+    <hr />
+    <div id="content"></div>
+
+    <!-- 引用jQuery-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+        let CLIENT_ID = "654657940127-a788kg5aifrkk2q2944oq2m1v2s8qois.apps.googleusercontent.com";
+        let DISCOVERY_DOCS = ["https://content.googleapis.com/discovery/v1/apis/fitness/v1/rest"];
+
+    </script>
+    <!--執行Google API必須的.js，callback function名稱請自訂 -->
+    <!--↓https://apis.google.com/js/platform.js 或 https://apis.google.com/js/api.js 兩者網址都行得通 這裡採用跟官網寫法一樣-->
+    <script async defer src="https://apis.google.com/js/api.js"
+            onload="this.onload=function(){};GoogleClientInit()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+
+    <!--以下請另外放置到 *.js檔案-->
+    <script type="text/javascript">
+        //jQuery處理button click event 當畫面DOM都載入時....
+        $(function () {
+            $("#btnSignIn").on("click", function () {
+                $("#content").html("");//清空顯示結果
+                GoogleLogin();//Google 登入
+            });
+            $("#btnDisconnect").on("click", function () {
+                Google_disconnect();//和Google App斷連
+            });
+        });
+
+        function GoogleClientInit() {
+            //官網範例寫client:auth2，但本人實測由於待會要呼叫gapi.client.init而不是gapi.auth2.init，所以給client即可
+            gapi.load('client', function () {
+                gapi.auth2.init({
+                    clientId: CLIENT_ID,
+                    scope: "https://www.googleapis.com/auth/fitness.activity.read",
+                    discoveryDocs: DISCOVERY_DOCS
+                });
+            });
+        }
+
+
+        function GoogleLogin() {
+            let auth2 = gapi.auth2.getAuthInstance();
+            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read"}).then(function (GoogleUser) {
+                console.log("Google登入成功");
+                let user_id = GoogleUser.getId();
+                console.log(`user_id:${user_id}`);
+                let AuthResponse = GoogleUser.getAuthResponse(true);
+                let id_token = AuthResponse.id_token;
+                				
+				gapi.client.fitness.users.dataset.aggregate({
+					"userId": "me",
+					"resource": {
+						"aggregateBy": [
+						  {
+							"dataTypeName": "com.google.step_count.delta",
+							"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+						  }
+						],
+						"endTimeMillis": 1597507200000,
+						"startTimeMillis": 1596902400000,// Any time in milliseconds
+						"bucketByTime": {
+						  "durationMillis": 86400000// Any duration in milliseconds
+						}
+					  }
+					}).then(function (res) {
+							console.log("Response", res);
+							let str = JSON.stringify(res.result);
+							document.getElementById('content').innerHTML = str;
+					});
+				},			
+                function (error) {
+                    console.log("Google登入失敗");
+                    console.log(error);
+                });
+
+        }
+
+        function Google_disconnect() {
+            let auth2 = gapi.auth2.getAuthInstance(); //取得GoogleAuth物件
+
+            auth2.disconnect().then(function () {
+                console.log('User disconnect.');
+            });
+        }
+		
+		
+		
+    </script>
+</body>
+</html>
