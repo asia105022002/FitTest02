@@ -7,6 +7,7 @@
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
     <button type="button" id="btnDisconnect">斷連Google App</button>
+	<textarea id="mainTextarea" cols="30" rows="10"></textarea>
     <hr />
     <div id="content"></div>
 
@@ -72,8 +73,8 @@
 					},
 					success: function(returnData){
 						console.log(returnData);
-						let str = JSON.stringify(returnData, null, 2);
-						document.getElementById('content').innerHTML = str;
+						let str = JSON.stringify(returnData, null, 4);
+						$('#myTextarea').text(str);
 					},
 					error: function(xhr, ajaxOptions, thrownError){
 						console.log(xhr.status);
