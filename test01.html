@@ -51,8 +51,37 @@
                 console.log(`user_id:${user_id}`);
                 let AuthResponse = GoogleUser.getAuthResponse(true);
                 let id_token = AuthResponse.id_token;
-                				
-				gapi.client.fitness.users.dataset.aggregate({
+                
+				var requestURL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";
+				var dataJSON = {
+				  "aggregateBy": [{
+					"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+				  }],
+				  "bucketByTime": { "durationMillis": 86400000 },
+				  "startTimeMillis": 1596902400000,
+				  "endTimeMillis": 1597507200000
+				};
+				
+				$.ajax({
+					url: requestURL,
+					data: JSON.stringify(dataJSON),
+					type: "POST",
+					dataType: "json",
+					contentType: "application/json;charset=utf-8",
+					beforeSend: function (xhr) {
+						xhr.setRequestHeader('Authorization', 'Bearer t-7614f875-8423-4f20-a674-d7cf3096290e');
+					},
+					success: function(returnData){
+						console.log(returnData);
+					},
+					error: function(xhr, ajaxOptions, thrownError){
+						console.log(xhr.status);
+						console.log(thrownError);
+					}
+				});
+
+				
+				/*gapi.client.fitness.users.dataset.aggregate({
 					"userId": "me",
 					"resource": {
 						"aggregateBy": [
@@ -71,12 +100,12 @@
 							console.log("Response", res);
 							let str = JSON.stringify(res.result);
 							document.getElementById('content').innerHTML = str;
-					});
-				},			
-                function (error) {
-                    console.log("Google登入失敗");
-                    console.log(error);
-                });
+					}); */
+			},			
+			function (error) {
+				console.log("Google登入失敗");
+				console.log(error);
+			});
 
         }
 
