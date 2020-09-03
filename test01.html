@@ -40,7 +40,7 @@
         function GoogleClientInit() {
             //官網範例寫client:auth2，但本人實測由於待會要呼叫gapi.client.init而不是gapi.auth2.init，所以給client即可
             gapi.load('client', function () {
-                gapi.client.init({
+                gapi.auth2.init({
                     clientId: CLIENT_ID,
                     scope: "https://www.googleapis.com/auth/fitness.activity.read",
                     discoveryDocs: DISCOVERY_DOCS
@@ -97,5 +97,52 @@
 		
 		
     </script>
+	
+	<script>
+
+  function authenticate() {
+    return gapi.auth2.getAuthInstance()
+        .signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read"})
+        .then(function() { console.log("Sign-in successful"); },
+              function(err) { console.error("Error signing in", err); });
+  }
+  function loadClient() {
+    //gapi.client.setApiKey("YOUR APP ID");
+    return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/fitness/v1/rest")
+        .then(function() { console.log("GAPI client loaded for API"); },
+              function(err) { console.error("Error loading GAPI client for API", err); });
+  }
+  // Make sure the client is loaded and sign-in is complete before calling this method.
+  function execute() {
+    return gapi.client.fitness.users.dataset.aggregate({
+      "userId": "me",
+      "resource": {
+        "aggregateBy": [
+          {
+            "dataTypeName": "com.google.step_count.delta",
+            "dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+          }
+        ],
+        "endTimeMillis": 1597507200000,// Any time in milliseconds
+        "startTimeMillis": 1596902400000,// Any time in milliseconds
+        "bucketByTime": {
+          "durationMillis": 86400000// Any duration in milliseconds
+        }
+      }
+    })
+        .then(function(response) {
+                // Handle the results here (response.result has the parsed body).
+                console.log("Response", response);
+              },
+              function(err) { console.error("Execute error", err); });
+  }
+  gapi.load("client:auth2", function() {
+    gapi.auth2.init({client_id: "654657940127-a788kg5aifrkk2q2944oq2m1v2s8qois.apps.googleusercontent.com"});
+  });
+</script>
+<button onclick="authenticate().then(loadClient)">authorize and load</button>
+<button onclick="execute()">execute</button>
+
+
 </body>
 </html>
