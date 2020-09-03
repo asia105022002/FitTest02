@@ -60,15 +60,14 @@
 				$.ajax({
 					type: "POST",
 					url: requestURL,
-					data: {
-					  "aggregateBy": [{					  
-						"dataTypeName": "com.google.step_count.delta",
+					data: JSON.stringify({
+					  "aggregateBy": [{					
 						"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
 					  }],
 					  "bucketByTime": { "durationMillis": 86400000 },
 					  "startTimeMillis": 1596902400000,
 					  "endTimeMillis": 1597507200000
-					},
+					}),
 					dataType: "json",
 					contentType: "application/json;charset=utf-8",
 					headers: {
