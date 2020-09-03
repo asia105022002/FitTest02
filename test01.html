@@ -40,7 +40,7 @@
         function GoogleClientInit() {
             //官網範例寫client:auth2，但本人實測由於待會要呼叫gapi.client.init而不是gapi.auth2.init，所以給client即可
             gapi.load('client', function () {
-                gapi.client.init({
+                gapi.auth2.init({
                     clientId: CLIENT_ID,
                     scope: "https://www.googleapis.com/auth/fitness.activity.read",
                     discoveryDocs: DISCOVERY_DOCS
