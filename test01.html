@@ -10,35 +10,29 @@
     <hr />
     <div id="content"></div>
 
-    <!-- 引用jQuery-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script type="text/javascript">
-        let CLIENT_ID = "669970685770-ddg00er1acfk7mhs33kce0fub51dk9b7.apps.googleusercontent.com";
+        let CLIENT_ID = "654657940127-a788kg5aifrkk2q2944oq2m1v2s8qois.apps.googleusercontent.com";
         let DISCOVERY_DOCS = ["https://content.googleapis.com/discovery/v1/apis/fitness/v1/rest"];
 
     </script>
-    <!--執行Google API必須的.js，callback function名稱請自訂 -->
-    <!--↓https://apis.google.com/js/platform.js 或 https://apis.google.com/js/api.js 兩者網址都行得通 這裡採用跟官網寫法一樣-->
-    <script async defer src="https://apis.google.com/js/api.js"
+    <script async defer src="https://apis.google.com/js/platform.js"
             onload="this.onload=function(){};GoogleClientInit()"
             onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
 
-    <!--以下請另外放置到 *.js檔案-->
     <script type="text/javascript">
-        //jQuery處理button click event 當畫面DOM都載入時....
         $(function () {
             $("#btnSignIn").on("click", function () {
-                $("#content").html("");//清空顯示結果
-                GoogleLogin();//Google 登入
+                $("#content").html("");
+                GoogleLogin();
             });
             $("#btnDisconnect").on("click", function () {
-                Google_disconnect();//和Google App斷連
+                Google_disconnect();
             });
         });
 
         function GoogleClientInit() {
-            //官網範例寫client:auth2，但本人實測由於待會要呼叫gapi.client.init而不是gapi.auth2.init，所以給client即可
             gapi.load('client', function () {
                 gapi.client.init({
                     clientId: CLIENT_ID,
@@ -67,10 +61,10 @@
 							"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
 						  }
 						],
-						"endTimeMillis": 1599062400000,
-						"startTimeMillis": 1598803200000,// Any time in milliseconds
+						"endTimeMillis": 1597507200000,
+						"startTimeMillis": 1596902400000,
 						"bucketByTime": {
-						  "durationMillis": 86400000// Any duration in milliseconds
+						  "durationMillis": 86400000
 						}
 					  }
 					}).then(function (res) {
@@ -87,12 +81,13 @@
         }
 
         function Google_disconnect() {
-            let auth2 = gapi.auth2.getAuthInstance(); //取得GoogleAuth物件
+            let auth2 = gapi.auth2.getAuthInstance();
 
             auth2.disconnect().then(function () {
                 console.log('User disconnect.');
             });
-        }		
-    </script>	
+        }
+		
+    </script>
 </body>
 </html>
