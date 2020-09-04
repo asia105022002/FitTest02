@@ -46,6 +46,20 @@
 			let startTimeMillis = Date.parse($("#startTime").val);
 			let endTimeMillis = Date.parse($("#endTime").val);
 			
+			console.log(startTimeMillis);
+			console.log(endTimeMillis);
+			
+			var requestBody = {
+			  "aggregateBy": [{					
+				"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+			  }],
+			  "bucketByTime": { "durationMillis": 86400000 },
+			  "startTimeMillis": startTimeMillis,
+			  "endTimeMillis": endTimeMillis
+			};			
+			
+			console.log(requestBody);
+			
 			let user_id = _user.getId();
 			let AuthResponse = _user.getAuthResponse(true);
 			let id_token = AuthResponse.id_token;
@@ -56,14 +70,7 @@
 			$.ajax({
 				type: "POST",
 				url: requestURL,
-				data: JSON.stringify({
-				  "aggregateBy": [{					
-					"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
-				  }],
-				  "bucketByTime": { "durationMillis": 86400000 },
-				  "startTimeMillis": startTimeMillis,
-				  "endTimeMillis": endTimeMillis
-				}),
+				data: JSON.stringify(requestBody),
 				dataType: "json",
 				contentType: "application/json;charset=utf-8",
 				headers: {
