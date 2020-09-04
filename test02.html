@@ -43,9 +43,11 @@
         });
 		
 		function GetStep() {
-			let startTimeMillis = Date.parse($("#startTime").val);
-			let endTimeMillis = Date.parse($("#endTime").val);
+			let startTimeMillis = Date.parse($("#startTime").val());
+			let endTimeMillis = Date.parse($("#endTime").val());
 			
+			console.log($("#startTime").val());
+			console.log($("#endTime").val());
 			console.log(startTimeMillis);
 			console.log(endTimeMillis);
 			
