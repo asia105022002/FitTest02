@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 02050916</title>
+    <title>GoogleFitTest01 02100916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -165,7 +165,7 @@
 
         function GoogleLogin() {
             let auth2 = gapi.auth2.getAuthInstance();
-            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read"}).then(function (GoogleUser) {
+            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read"}).then(function (GoogleUser) {
 				_user = GoogleUser;
                 console.log("Google登入成功");
 			},			
