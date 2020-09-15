@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 02100916</title>
+    <title>GoogleFitTest01 02130916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -87,7 +87,11 @@
 								$('.box').append($.format.date(startTime, 'yyyy/MM/dd HH:mm:ss - '));
 								$('.box').append($.format.date(endTime, 'HH:mm:ss'));
 								$('.box').append('\r\n');
-								$('.box').append(data.bucket[i].dataset[j].point[k].value[0].intVal);
+								$('.box').append(data.bucket[i].dataset[j].point[k].value[0].fpVal);
+								$('.box').append('\t');
+								$('.box').append(data.bucket[i].dataset[j].point[k].value[1].fpVal);
+								$('.box').append('\t');
+								$('.box').append(data.bucket[i].dataset[j].point[k].value[2].fpVal);
 								$('.box').append('\r\n\r\n');
 							}
 						}
