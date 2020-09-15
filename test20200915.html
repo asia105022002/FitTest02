@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01-11-12</title>
+    <title>GoogleFitTest01-11-40</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -73,6 +73,7 @@
 				},
 				success: function(returnData){
 					console.log('success');
+					console.log(returnData.bucket[0]);
 					$('.box').text("");
 					for(var bucket in returnData.bucket) {
 						for(var dataset in bucket.dataset){
