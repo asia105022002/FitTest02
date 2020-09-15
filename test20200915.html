@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01</title>
+    <title>GoogleFitTest01-11-12</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -77,12 +77,11 @@
 					for(var bucket in returnData.bucket) {
 						for(var dataset in bucket.dataset){
 							for(var point in fataset.point){
-								var box = $('.box');
-								box.append($.format.date(Date.parse(point.startTimeNanos.slice(0, 13)), 'yyyy/MM/dd HH:mm:ss - '));
-								box.append($.format.date(Date.parse(point.endTimeNanos.slice(0, 13)), 'HH:mm:ss'));
-								box.append('\r\n');
-								box.append(point.value[0].intVal);
-								box.append('\r\n');
+								$('.box').append($.format.date(Date.parse(point.startTimeNanos.slice(0, 13)), 'yyyy/MM/dd HH:mm:ss - '));
+								$('.box').append($.format.date(Date.parse(point.endTimeNanos.slice(0, 13)), 'HH:mm:ss'));
+								$('.box').append('\r\n');
+								$('.box').append(point.value[0].intVal);
+								$('.box').append('\r\n');
 							}
 						}
 					}
