@@ -73,8 +73,7 @@
 				},
 				success: function(returnData){
 					$('.box').text("");
-					let data = JSON.parse(returnData);
-					for(var bucket in data.bucket) {
+					for(var bucket in returnData.bucket) {
 						for(var dataset in bucket.dataset){
 							for(var point in fataset.point){
 								var box = $('.box');
