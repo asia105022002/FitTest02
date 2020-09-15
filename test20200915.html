@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GoogleFitTest01</title>
+</head>
+<body>
+    <button type="button" id="btnSignIn">Google登入</button>
+    <button type="button" id="btnDisconnect">Google登出</button><br>
+    <input type="text" id="startTime"><br>
+    <input type="text" id="endTime"><br>
+    <button type="button" id="btnStep">每日步數</button>	
+    <hr />
+	<pre class="box"></pre>
+
+    <div id="content"></div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+        let CLIENT_ID = "654657940127-a788kg5aifrkk2q2944oq2m1v2s8qois.apps.googleusercontent.com";
+        let DISCOVERY_DOCS = ["https://content.googleapis.com/discovery/v1/apis/fitness/v1/rest"];
+
+    </script>
+    <script async defer src="https://apis.google.com/js/platform.js"
+            onload="this.onload=function(){};GoogleClientInit()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+
+    <script type="text/javascript">
+		var _user;
+		
+        $(function () {
+            $("#btnSignIn").on("click", function () {
+                $("#content").html("");
+                GoogleLogin();
+            });
+            $("#btnDisconnect").on("click", function () {
+                GoogleDisconnect();
+            });
+            $("#btnStep").on("click", function () {
+                GetStep();
+            });
+        });
+		
+		function GetStep() {
+			let startTimeMillis = Date.parse($("#startTime").val());
+			let endTimeMillis = Date.parse($("#endTime").val());
+						
+			var requestBody = {
+			  "aggregateBy": [{					
+				"dataSourceId": "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"
+			  }],
+			  "bucketByTime": { "durationMillis": 86400000 },
+			  "startTimeMillis": startTimeMillis,
+			  "endTimeMillis": endTimeMillis
+			};
+			
+			let user_id = _user.getId();
+			let AuthResponse = _user.getAuthResponse(true);
+			let id_token = AuthResponse.id_token;
+			let access_token = AuthResponse.access_token;
+			
+			var requestURL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";				
+			
+			$.ajax({
+				type: "POST",
+				url: requestURL,
+				data: JSON.stringify(requestBody),
+				dataType: "json",
+				contentType: "application/json;charset=utf-8",
+				headers: {
+					'Authorization': `Bearer ${access_token}`,
+				},
+				success: function(returnData){
+					$('.box').text("");
+					let data = JSON.parse(returnData);
+					for(var bucket in data.bucket) {
+						for(var dataset in bucket.dataset){
+							for(var point in fataset.point){
+								var box = $('.box');
+								box.append($.format.date(Date.parse(point.startTimeNanos.slice(0, 13)), 'yyyy/MM/dd HH:mm:ss - '));
+								box.append($.format.date(Date.parse(point.endTimeNanos.slice(0, 13)), 'HH:mm:ss'));
+								box.append('\r\n');
+								box.append(point.value[0].intVal);
+								box.append('\r\n');
+							}
+						}
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError){
+					console.log(xhr.status);
+					console.log(thrownError);
+				}
+			});
+		}
+
+        function GoogleClientInit() {
+            gapi.load('client', function () {
+                gapi.client.init({
+                    clientId: CLIENT_ID,
+                    scope: "https://www.googleapis.com/auth/fitness.activity.read",
+                    discoveryDocs: DISCOVERY_DOCS
+                });
+            });
+        }
+
+        function GoogleLogin() {
+            let auth2 = gapi.auth2.getAuthInstance();
+            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read"}).then(function (GoogleUser) {
+				_user = GoogleUser;
+                console.log("Google登入成功");
+			},			
+			function (error) {
+				console.log("Google登入失敗");
+				console.log(error);
+			});
+        }
+
+        function GoogleDisconnect() {
+            let auth2 = gapi.auth2.getAuthInstance();
+            auth2.disconnect().then(function () {
+                console.log('User disconnect.');
+            });
+        }
+		
+    </script>
+</body>
+</html>
