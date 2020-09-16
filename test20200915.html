@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 03280916</title>
+    <title>GoogleFitTest01 03530916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -30,6 +30,17 @@
             onload="this.onload=function(){};GoogleClientInit()"
             onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
+	
+	<script>
+	
+		var activity = {
+			1:'騎乘自行車',
+			7:'步行',
+			8:'跑步',
+			72:'睡眠'
+		};
+	
+	</script>
 
     <script type="text/javascript">
 		var _user;
@@ -90,8 +101,12 @@
 						
 						$('.box').append($.format.date(startTime, 'yyyy/MM/dd HH:mm:ss - '));
 						$('.box').append($.format.date(endTime, 'yyyy/MM/dd HH:mm:ss'));
-						$('.box').append('\r\n');								
-						$('.box').append(type)
+						$('.box').append('\r\n');
+						if(type in activity){
+							$('.box').append(activity[type])
+						}else{
+							$('.box').append(type)							
+						}
 						$('.box').append(': ');
 						$('.box').append(name)
 						$('.box').append('\r\n\r\n');
@@ -204,7 +219,7 @@
 								if(v1 == v2 && v2 == v3){
 									$('.box').append(v1);
 								}else{
-									$('.box').append('平均心跳: ' + v1 + '(' + v2 + ' - ' + v3 + ')');
+									$('.box').append('平均心跳: ' + Number((v1).toFixed(2)) + '(' + v2 + ' - ' + v3 + ')');
 								}
 								$('.box').append('\r\n\r\n');
 							}
