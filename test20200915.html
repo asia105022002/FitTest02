@@ -2,15 +2,16 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 02130916</title>
+    <title>GoogleFitTest01 01150916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
     <button type="button" id="btnDisconnect">Google登出</button><br>
-    <input type="text" id="startTime"><br>
-    <input type="text" id="endTime"><br>
+    開始時間: <input type="text" id="startTime"><br>
+    結束時間: <input type="text" id="endTime"><br>
     <button type="button" id="btnStep">每日步數</button>
     <button type="button" id="btnHeartRateBpm">每分鐘心跳</button>
+    <button type="button" id="btnCalories">每日消耗卡路里</button>
     <hr />
 	<pre class="box"></pre>
 
@@ -45,7 +46,63 @@
             $("#btnHeartRateBpm").on("click", function () {
                 GetHeartRateBpm();
             });
+            $("#btnCalories").on("click", function () {
+                GetCalories();
+            });
         });
+		
+		function GetCalories() {
+			let startTimeMillis = Date.parse($("#startTime").val());
+			let endTimeMillis = Date.parse($("#endTime").val());
+						
+			var requestBody = {
+			  "aggregateBy": [{					
+				"dataSourceId": "derived:com.google.calories.expended:com.google.android.gms:merge_calories_expended"
+			  }],
+			  "bucketByTime": { "durationMillis": 86400000 },
+			  "startTimeMillis": startTimeMillis,
+			  "endTimeMillis": endTimeMillis
+			};
+			
+			let user_id = _user.getId();
+			let AuthResponse = _user.getAuthResponse(true);
+			let id_token = AuthResponse.id_token;
+			let access_token = AuthResponse.access_token;
+			
+			var requestURL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";				
+			
+			$.ajax({
+				type: "POST",
+				url: requestURL,
+				data: JSON.stringify(requestBody),
+				dataType: "json",
+				contentType: "application/json;charset=utf-8",
+				headers: {
+					'Authorization': `Bearer ${access_token}`,
+				},
+				success: function(returnData){
+					$('.box').text("每日消耗卡路里:\r\n");
+					var data = returnData;
+					for (var i in data.bucket) {
+						for (var j in data.bucket[i].dataset) {
+							for (var k in data.bucket[i].dataset[j].point) {
+								var startTime = new Date(parseInt(data.bucket[i].dataset[j].point[k].startTimeNanos.slice(0, 13)));
+								var endTime = new Date(parseInt(data.bucket[i].dataset[j].point[k].endTimeNanos.slice(0, 13)));
+								$('.box').append($.format.date(startTime, 'yyyy/MM/dd HH:mm:ss - '));
+								$('.box').append($.format.date(endTime, 'HH:mm:ss'));
+								$('.box').append('\r\n');
+								$('.box').append(data.bucket[i].dataset[j].point[k].value[0].fpVal);
+								$('.box').append('\r\n\r\n');
+							}
+						}
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError){
+					console.log(xhr.status);
+					console.log(thrownError);
+				}
+			});
+		}
 		
 		function GetHeartRateBpm() {
 			let startTimeMillis = Date.parse($("#startTime").val());
