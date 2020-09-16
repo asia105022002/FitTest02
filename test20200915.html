@@ -2,16 +2,18 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 01150916</title>
+    <title>GoogleFitTest01 03020916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
     <button type="button" id="btnDisconnect">Google登出</button><br>
     開始時間: <input type="text" id="startTime"><br>
     結束時間: <input type="text" id="endTime"><br>
+    <button type="button" id="btnActivity">活動日誌</button>
     <button type="button" id="btnStep">每日步數</button>
-    <button type="button" id="btnHeartRateBpm">每分鐘心跳</button>
     <button type="button" id="btnCalories">每日消耗卡路里</button>
+    <button type="button" id="btnHeartRateBpm">心跳速率</button>
+    時間間格: <input type="text" id="timeRate" value = "1">分鐘<br>
     <hr />
 	<pre class="box"></pre>
 
@@ -49,7 +51,56 @@
             $("#btnCalories").on("click", function () {
                 GetCalories();
             });
+            $("#btnActivity").on("click", function () {
+                GetActivity();
+            });
         });
+		
+		function GetActivity() {
+			let startTime = Date.parse($("#startTime").val());
+			let endTime = Date.parse($("#endTime").val());
+			
+			let user_id = _user.getId();
+			let AuthResponse = _user.getAuthResponse(true);
+			let id_token = AuthResponse.id_token;
+			let access_token = AuthResponse.access_token;
+			
+			var requestURL = "https://www.googleapis.com/fitness/v1/users/me/sessions?startTime=" +
+			$.format.date(startTime, 'yyyy-MM-ddTHH:mm:ssZ&endTime=') + 
+			$.format.date(endTime, 'yyyy-MM-ddTHH:mm:ssZ');
+			//"2014-04-01" + "T" + "00:00:00" + "Z&endTime=" + "2014-04-30" + "T" + "24:00:00" + "Z";
+			
+			$.ajax({
+				url: requestURL,
+				dataType: "json",
+				contentType: "application/json;charset=utf-8",
+				headers: {
+					'Authorization': `Bearer ${access_token}`,
+				},
+				success: function(returnData){
+					$('.box').text("活動日誌:\r\n");
+					var data = returnData;
+					for (var i in data.session) {
+						var startTime = new Date(parseInt(data.session[i].startTimeMillis));
+						var endTime = new Date(parseInt(data.session[i].endTimeMillis));
+						var type = data.session[i].activityType; //int
+						var name = data.session[i].name;
+						
+						$('.box').append($.format.date(startTime, 'yyyy/MM/dd HH:mm:ss - '));
+						$('.box').append($.format.date(endTime, 'yyyy/MM/dd HH:mm:ss'));
+						$('.box').append('\r\n');								
+						$('.box').append(type)
+						$('.box').append(': ');
+						$('.box').append(name)
+						$('.box').append('\r\n\r\n');
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError){
+					console.log(xhr.status);
+					console.log(thrownError);
+				}
+			});
+		}
 		
 		function GetCalories() {
 			let startTimeMillis = Date.parse($("#startTime").val());
@@ -107,12 +158,13 @@
 		function GetHeartRateBpm() {
 			let startTimeMillis = Date.parse($("#startTime").val());
 			let endTimeMillis = Date.parse($("#endTime").val());
+			let timeRate = Date.parse($("#timeRate").val());
 						
 			var requestBody = {
 			  "aggregateBy": [{					
 				"dataSourceId": "derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm"
 			  }],
-			  "bucketByTime": { "durationMillis": 60000 },
+			  "bucketByTime": { "durationMillis": parseInt(timeRate)*60000 },
 			  "startTimeMillis": startTimeMillis,
 			  "endTimeMillis": endTimeMillis
 			};
@@ -134,7 +186,7 @@
 					'Authorization': `Bearer ${access_token}`,
 				},
 				success: function(returnData){
-					$('.box').text("每分鐘心跳:\r\n");
+					$('.box').text("心跳速率:\r\n");
 					var data = returnData;
 					for (var i in data.bucket) {
 						for (var j in data.bucket[i].dataset) {
@@ -226,7 +278,7 @@
 
         function GoogleLogin() {
             let auth2 = gapi.auth2.getAuthInstance();
-            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read"}).then(function (GoogleUser) {
+            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read"}).then(function (GoogleUser) {
 				_user = GoogleUser;
                 console.log("Google登入成功");
 			},			
