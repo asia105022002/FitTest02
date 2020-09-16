@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 03120916</title>
+    <title>GoogleFitTest01 03240916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -11,7 +11,7 @@
     結束時間: <input type="text" id="endTime"><br>
     <button type="button" id="btnActivity">活動日誌</button>
     <button type="button" id="btnStep">每日步數</button>
-    <button type="button" id="btnCalories">每日消耗卡路里</button><br>
+    <button type="button" id="btnCalories">每日消耗卡路里</button>
     <button type="button" id="btnHeartRateBpm">心跳速率</button>
     時間間格: <input type="text" id="timeRate" value = "1">分鐘<br>
     <hr />
@@ -66,7 +66,7 @@
 			let access_token = AuthResponse.access_token;
 			
 			var requestURL = "https://www.googleapis.com/fitness/v1/users/me/sessions?startTime=" +
-			$.format.date(startTime, 'yyyy-MM-ddTHH:mm:ssZ&endTime=') + 
+			$.format.date(startTime, 'yyyy-MM-ddTHH:mm:ssZ&') + "endTime="
 			$.format.date(endTime, 'yyyy-MM-ddTHH:mm:ssZ');
 			//"2014-04-01" + "T" + "00:00:00" + "Z&endTime=" + "2014-04-30" + "T" + "24:00:00" + "Z";
 			console.log(requestURL);
@@ -198,9 +198,9 @@
 								$('.box').append($.format.date(startTime, 'yyyy/MM/dd HH:mm:ss - '));
 								$('.box').append($.format.date(endTime, 'HH:mm:ss'));
 								$('.box').append('\r\n');
-								var v1 = data.bucket[i].dataset[j].point[k].value[0];
-								var v2 = data.bucket[i].dataset[j].point[k].value[1];
-								var v3 = data.bucket[i].dataset[j].point[k].value[2];
+								var v1 = data.bucket[i].dataset[j].point[k].value[0].fpVal;
+								var v2 = data.bucket[i].dataset[j].point[k].value[1].fpVal;
+								var v3 = data.bucket[i].dataset[j].point[k].value[2].fpVal;
 								if(v1 == v2 && v2 == v3){
 									$('.box').append(v1);
 								}else{
@@ -283,7 +283,7 @@
 
         function GoogleLogin() {
             let auth2 = gapi.auth2.getAuthInstance();
-            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read"}).then(function (GoogleUser) {
+            auth2.signIn({scope: "https://www.googleapis.com/auth/fitness.activity.read https://www.googleapis.com/auth/fitness.body.read"}).then(function (GoogleUser) {
 				_user = GoogleUser;
                 console.log("Google登入成功");
 			},			
