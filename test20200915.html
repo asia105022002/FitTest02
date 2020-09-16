@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 03530916</title>
+    <title>GoogleFitTest01 06000916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -107,8 +107,9 @@
 						}else{
 							$('.box').append(type)							
 						}
-						$('.box').append(': ');
-						$('.box').append(name)
+						if(name != ''){
+							$('.box').append(': ' + name);							
+						}
 						$('.box').append('\r\n\r\n');
 					}
 				},
@@ -219,7 +220,7 @@
 								if(v1 == v2 && v2 == v3){
 									$('.box').append(v1);
 								}else{
-									$('.box').append('平均心跳: ' + Number((v1).toFixed(2)) + '(' + v2 + ' - ' + v3 + ')');
+									$('.box').append('平均心跳: ' + Number((v1).toFixed(2)) + ' (' + v3 + ' - ' + v2 + ')');
 								}
 								$('.box').append('\r\n\r\n');
 							}
