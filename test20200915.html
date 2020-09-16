@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 03240916</title>
+    <title>GoogleFitTest01 03280916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -11,7 +11,7 @@
     結束時間: <input type="text" id="endTime"><br>
     <button type="button" id="btnActivity">活動日誌</button>
     <button type="button" id="btnStep">每日步數</button>
-    <button type="button" id="btnCalories">每日消耗卡路里</button>
+    <button type="button" id="btnCalories">每日消耗卡路里</button><br>
     <button type="button" id="btnHeartRateBpm">心跳速率</button>
     時間間格: <input type="text" id="timeRate" value = "1">分鐘<br>
     <hr />
@@ -66,8 +66,8 @@
 			let access_token = AuthResponse.access_token;
 			
 			var requestURL = "https://www.googleapis.com/fitness/v1/users/me/sessions?startTime=" +
-			$.format.date(startTime, 'yyyy-MM-ddTHH:mm:ssZ&') + "endTime="
-			$.format.date(endTime, 'yyyy-MM-ddTHH:mm:ssZ');
+			$.format.date(startTime, 'yyyy-MM-ddTHH:mm:ss.000Z&') + "endTime=" + 
+			$.format.date(endTime, 'yyyy-MM-ddTHH:mm:ss.000Z');
 			//"2014-04-01" + "T" + "00:00:00" + "Z&endTime=" + "2014-04-30" + "T" + "24:00:00" + "Z";
 			console.log(requestURL);
 			
