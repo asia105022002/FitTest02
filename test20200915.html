@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoogleFitTest01 03020916</title>
+    <title>GoogleFitTest01 03120916</title>
 </head>
 <body>
     <button type="button" id="btnSignIn">Google登入</button>
@@ -69,6 +69,7 @@
 			$.format.date(startTime, 'yyyy-MM-ddTHH:mm:ssZ&endTime=') + 
 			$.format.date(endTime, 'yyyy-MM-ddTHH:mm:ssZ');
 			//"2014-04-01" + "T" + "00:00:00" + "Z&endTime=" + "2014-04-30" + "T" + "24:00:00" + "Z";
+			console.log(requestURL);
 			
 			$.ajax({
 				url: requestURL,
@@ -78,6 +79,7 @@
 					'Authorization': `Bearer ${access_token}`,
 				},
 				success: function(returnData){
+					console.log(returnData);
 					$('.box').text("活動日誌:\r\n");
 					var data = returnData;
 					for (var i in data.session) {
@@ -158,13 +160,13 @@
 		function GetHeartRateBpm() {
 			let startTimeMillis = Date.parse($("#startTime").val());
 			let endTimeMillis = Date.parse($("#endTime").val());
-			let timeRate = Date.parse($("#timeRate").val());
+			let timeRate = parseInt($("#timeRate").val()) * 60000;
 						
 			var requestBody = {
 			  "aggregateBy": [{					
 				"dataSourceId": "derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm"
 			  }],
-			  "bucketByTime": { "durationMillis": parseInt(timeRate)*60000 },
+			  "bucketByTime": { "durationMillis": timeRate },
 			  "startTimeMillis": startTimeMillis,
 			  "endTimeMillis": endTimeMillis
 			};
@@ -196,11 +198,14 @@
 								$('.box').append($.format.date(startTime, 'yyyy/MM/dd HH:mm:ss - '));
 								$('.box').append($.format.date(endTime, 'HH:mm:ss'));
 								$('.box').append('\r\n');
-								$('.box').append(data.bucket[i].dataset[j].point[k].value[0].fpVal);
-								$('.box').append('\t');
-								$('.box').append(data.bucket[i].dataset[j].point[k].value[1].fpVal);
-								$('.box').append('\t');
-								$('.box').append(data.bucket[i].dataset[j].point[k].value[2].fpVal);
+								var v1 = data.bucket[i].dataset[j].point[k].value[0];
+								var v2 = data.bucket[i].dataset[j].point[k].value[1];
+								var v3 = data.bucket[i].dataset[j].point[k].value[2];
+								if(v1 == v2 && v2 == v3){
+									$('.box').append(v1);
+								}else{
+									$('.box').append('平均心跳: ' + v1 + '(' + v2 + ' - ' + v3 + ')');
+								}
 								$('.box').append('\r\n\r\n');
 							}
 						}
